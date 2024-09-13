@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 	KOpts opt = kOptH;
 	int processed_number = 0;
 
-	void (*handlers[6])(int) = {
+	int (*handlers[6])(int) = {
 		HandlerOptH, HandlerOptP, HandlerOptS,
 		HandlerOptE, HandlerOptA, HandlerOptF
 	};
@@ -62,7 +62,11 @@ int main(int argc, char* argv[]) {
 		return error_code;
 	}
 
-	handlers[opt](processed_number);
+	error_code = handlers[opt](processed_number);
+	if (error_code != S_OK) {
+		printf("Handler error: %d\n", error_code);
+		return error_code;
+	}
 
 	return S_OK;
 }
