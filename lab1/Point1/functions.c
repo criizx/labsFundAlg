@@ -1,16 +1,24 @@
 #include <stdio.h>
 #include <math.h>
+#include "error_codes.h"
 #include "functions.h"
 
 #define HEX_SIZE 100
 
 void decToHex(int n) {
+    if (n < 0){
+        printf("Number must be non-negative for hex conversation");
+        return E_INVALID_ARG;
+    }
+
     char hex[HEX_SIZE];
     int i = 0;
+
     if (n == 0) {
         printf("0");
-        return;
+        return S_OK;
     }
+
     while (n != 0) {
         int remainder = n % 16;
         if (remainder < 10) {
@@ -24,6 +32,7 @@ void decToHex(int n) {
     for (int j = i - 1; j >= 0; j--) {
         printf("%c ", hex[j]);
     }
+    return S_OK;
 }
 
 int sumFactorial(int n) {
@@ -35,6 +44,10 @@ int sumFactorial(int n) {
 }
 
 unsigned long long factorial(int n) {
+    if (n < 0){
+        printf("There is no factorial for negative nums\n");
+        return E_INVALID_ARG;
+    }
     unsigned long long result = 1;
     for (int i = 2; i <= n; ++i) {
         result *= i;
@@ -42,9 +55,9 @@ unsigned long long factorial(int n) {
     return result;
 }
 
-int isSimple(int numForCheck) {
+int isPrime(int numForCheck) {
     if (numForCheck < 2) {
-        return 0;
+        return 1;
     }
     int maxVal = sqrt(numForCheck);
     for (int i = 2; i <= maxVal; ++i) {
@@ -52,5 +65,4 @@ int isSimple(int numForCheck) {
             return 0;
         }
     }
-    return 1;
 }

@@ -7,6 +7,6 @@ int sumFactorial(int n);
 
 unsigned long long factorial(int n);
 
-int isSimple(int numForCheck);
+int isPrime(int numForCheck);
 
 #endif
