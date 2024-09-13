@@ -1,12 +1,12 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-void decToHex(int n);
+void DecToHex(int n);
 
-int sumFactorial(int n);
+int SumUpToN(int n);
 
-unsigned long long factorial(int n);
+unsigned long long Factorial(int n);
 
-int isPrime(int numForCheck);
+int IsPrime(int num_for_check);
 
 #endif

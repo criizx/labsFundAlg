@@ -5,64 +5,76 @@
 
 #define HEX_SIZE 100
 
-void decToHex(int n) {
-    if (n < 0){
-        printf("Number must be non-negative for hex conversation");
-        return E_INVALID_ARG;
-    }
+void DecToHex(int n) {
+	if (n < 0) {
+		printf("Number must be non-negative for hex conversion\n");
+		return;
+	}
 
-    char hex[HEX_SIZE];
-    int i = 0;
+	if (n >= HEX_SIZE) {
+		printf("Number too large to be converted to hex\n");
+		return;
+	}
 
-    if (n == 0) {
-        printf("0");
-        return S_OK;
-    }
+	char hex[HEX_SIZE];
+	int i = 0;
 
-    while (n != 0) {
-        int remainder = n % 16;
-        if (remainder < 10) {
-            hex[i] = remainder + '0';
-        } else {
-            hex[i] = remainder - 10 + 'A';
-        }
-        n = n / 16;
-        i++;
-    }
-    for (int j = i - 1; j >= 0; j--) {
-        printf("%c ", hex[j]);
-    }
-    return S_OK;
+	if (n == 0) {
+		printf("0");
+		return;
+	}
+
+	while (n != 0) {
+		int remainder = n % 16;
+		if (remainder < 10) {
+			hex[i] = remainder + '0';
+		} else {
+			hex[i] = remainder - 10 + 'A';
+		}
+		n /= 16;
+		i++;
+	}
+
+	for (int j = i - 1; j >= 0; j--) {
+		printf("%c ", hex[j]);
+	}
+	printf("\n");
 }
 
-int sumFactorial(int n) {
-    int result = 0;
-    for (int i = 1; i <= n; ++i) {
-        result += i;
-    }
-    return result;
+int SumUpToN(int n) {
+	int result = 0;
+	for (int i = 1; i <= n; ++i) {
+		result += i;
+	}
+	return result;
 }
 
-unsigned long long factorial(int n) {
-    if (n < 0){
-        printf("There is no factorial for negative nums\n");
-        return E_INVALID_ARG;
-    }
-    unsigned long long result = 1;
-    for (int i = 2; i <= n; ++i) {
-        result *= i;
-    }
-    return result;
+unsigned long long Factorial(int n) {
+	if (n < 0) {
+		printf("There is no factorial for negative numbers\n");
+		return 0;
+	}
+	unsigned long long result = 1;
+	for (int i = 2; i <= n; ++i) {
+		result *= i;
+
+		if (result < 0) {
+			printf("Factorial overflow for %d\n", n);
+			return E_CALCULATION_OVERFLOW;
+		}
+	}
+	return result;
 }
 
-int isPrime(int numForCheck) {
-    if (numForCheck < 2) {
-        return 1;
-    }
-    int maxVal = sqrt(numForCheck);
-    for (int i = 2; i <= maxVal; ++i) {
-        if (numForCheck % i == 0) {
-            return 0;
-        }
-    }
+int IsPrime(int num_for_check) {
+	if (num_for_check < 2) {
+		return 0;
+	}
+	int max_val = sqrt(num_for_check);
+	for (int i = 2; i <= max_val; ++i) {
+		if (num_for_check % i == 0) {
+			return 0;
+		}
+	}
+	return 1;
 }
