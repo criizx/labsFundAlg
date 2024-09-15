@@ -1,46 +1,61 @@
 #include <stdio.h>
 #include <math.h>
-
-double polinom_(double x) {
-    double e = exp(1.0);
-     return x * x - 2;
-}
-
-double findRoot(double (*polinom)(double), double a, double b, double eps) {
-    double c;
-    while ((b - a) / 2 > eps) {
-        c = (a + b) / 2;
-        if (polinom(a) * polinom(c) > 0) {
-            a = c;
-        } else {
-            b = c;
-        }
-    }
-    return c;
-}
+#include "polynomials.h"
+#include "root_finder.h"
 
 int main() {
     double a, b, eps, x;
+    int choice;
+    double (*polinom)(double);
 
-    printf("Введите границы интервала (a и b): ");
+    printf("Choose a constant to find the root for:\n");
+    printf("1. e\n");
+    printf("2. π\n");
+    printf("3. ln(2)\n");
+    printf("4. sqrt(2)\n");
+    printf("Enter the constant number: ");
+    if (scanf("%d", &choice) != 1 || choice < 1 || choice > 4) {
+        printf("Input error!\n");
+        return 1;
+    }
+
+    switch (choice) {
+        case 1:
+            polinom = polinomE;
+            break;
+        case 2:
+            polinom = polinomPi;
+            break;
+        case 3:
+            polinom = polinomLn2;
+            break;
+        case 4:
+            polinom = polinomSqrt2;
+            break;
+        default:
+            printf("Invalid choice!\n");
+            return 1;
+    }
+
+    printf("Enter the interval bounds (a and b): ");
     if (scanf("%lf %lf", &a, &b) != 2) {
-        printf("Ошибка ввода!\n");
+        printf("Input error!\n");
         return 1;
     }
 
     if (polinom(a) * polinom(b) > 0) {
-        printf("Неверный интервал!\n");
-        return 0;
+        printf("Invalid interval! The function has the same signs at the ends.\n");
+        return 1;
     }
 
-    printf("Введите точность (eps): ");
+    printf("Enter precision (eps): ");
     if (scanf("%lf", &eps) != 1) {
-        printf("Ошибка ввода!\n");
+        printf("Input error!\n");
         return 1;
     }
 
     x = findRoot(polinom, a, b, eps);
-    printf("Корень: %lf\n", x);
+    printf("Root: %lf\n", x);
 
     return 0;
 }
