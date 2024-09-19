@@ -67,7 +67,7 @@ double CalculatePiSeries(double precision) {
 
     do {
         pi_prev = pi_current;
-        pi_current = pi_prev + (-1.0, n + 1) / (2.0 * n - 1.0);
+        pi_current = pi_prev + pow(-1.0, n + 1) / (2.0 * n - 1.0);
         n++;
     }while (fabs(4 * pi_current - 4 * pi_prev) > precision);
 
@@ -154,7 +154,7 @@ double CalculateYLimit(double precision) {
             y_current += binom_coeff * (pow(-1, k)/ k) * log(factorialK);
         }
         m++;
-    }while (fabs(y_current - y_prev) < precision);
+    }while (fabs(y_current - y_prev) > precision);
 
     return y_current;
 }
@@ -169,7 +169,7 @@ double CalculateYSeries(double precision) {
         for (int k = 2; k <= n; ++k){
             y_current += 1.0/pow((int)sqrt(k), 2) - 1/k;
         }
-    }while (fabs(y_current - y_prev) < precision); 
+    }while (fabs(y_current - y_prev) > precision); 
     return y_current;
 }
 
