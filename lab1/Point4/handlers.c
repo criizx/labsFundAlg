@@ -1,79 +1,59 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include "handlers.h"
-#include "functions.h"
 #include "error_codes.h"
+
+void CloseFiles(FILE *inputFile, FILE *outputFile) {
+    if (inputFile != NULL) {
+        fclose(inputFile);
+    }
+    if (outputFile != NULL) {
+        fclose(outputFile);
+    }
+}
 
 int HandlerOptD(char* path, bool nFlag, char* res_path) {
     FILE *file = fopen(path, "r");
     if (file == NULL) {
         perror("Error opening input file");
-        return EXIT_FAILURE;
+        return E_INVALID_ARG;
     }
 
-    char outputFilePath[256];
-	char *fileName = strrchr(path, '/');
-
-	if (!fileName) {
-        fileName = path;
-	} else {
-        fileName++;
-    }
-	if (!nFlag){
-		snprintf(outputFilePath, sizeof(outputFilePath), "%.*sout_%s", (int)(fileName - path), path, fileName);
-		strncpy(res_path, outputFilePath, 255);
-	}
-	res_path[255] = '\0';
-
-    FILE *outputFile = fopen(outputFilePath, "w");
+    FILE *outputFile = fopen(res_path, "w");
     if (outputFile == NULL) {
         perror("Error opening output file");
-        fclose(file);
-        return EXIT_FAILURE;
+        CloseFiles(file, NULL);
+        return E_BAD_ALLOC;
     }
-	    char ch;
+
+    char ch;
     while ((ch = fgetc(file)) != EOF) {
         if (!isdigit((unsigned char)ch)) {
             fputc(ch, outputFile);
         }
     }
 
-    fclose(file);
-    fclose(outputFile);
+    CloseFiles(file, outputFile);
 
-    printf("Digits successfully removed, result saved to %s.\n", outputFilePath);
-    return EXIT_SUCCESS;
-
+    printf("Digits successfully removed, result saved to %s.\n", res_path);
+    return S_OK;
 }
 
 int HandlerOptI(char* path, bool nFlag, char* res_path) {
     FILE *file = fopen(path, "r");
     if (file == NULL) {
         perror("Error opening input file");
-        return EXIT_FAILURE;
+        return E_INVALID_ARG;
     }
 
-    char outputFilePath[256];
-    char *fileName = strrchr(path, '/');
-    if (!fileName) {
-        fileName = path;
-    } else {
-        fileName++;
-    }
-    if (!nFlag) {
-        snprintf(outputFilePath, sizeof(outputFilePath), "%.*sout_%s", (int)(fileName - path), path, fileName);
-        strncpy(res_path, outputFilePath, 255);
-    }
-    res_path[255] = '\0';
-
-    FILE *outputFile = fopen(outputFilePath, "w");
+    FILE *outputFile = fopen(res_path, "w");
     if (outputFile == NULL) {
         perror("Error opening output file");
-        fclose(file);
-        return EXIT_FAILURE;
+        CloseFiles(file, NULL);
+        return E_BAD_ALLOC;
     }
 
     char line[1024];
@@ -87,39 +67,24 @@ int HandlerOptI(char* path, bool nFlag, char* res_path) {
         fprintf(outputFile, "%d\n", latin_count);
     }
 
-    fclose(file);
-    fclose(outputFile);
+    CloseFiles(file, outputFile);
 
-    printf("Latin letters counted and saved to %s.\n", outputFilePath);
-    return EXIT_SUCCESS;
+    printf("Latin letters counted and saved to %s.\n", res_path);
+    return S_OK;
 }
-
 
 int HandlerOptS(char* path, bool nFlag, char* res_path) {
     FILE *file = fopen(path, "r");
     if (file == NULL) {
         perror("Error opening input file");
-        return EXIT_FAILURE;
+        return E_INVALID_ARG;
     }
 
-    char outputFilePath[256];
-    char *fileName = strrchr(path, '/');
-    if (!fileName) {
-        fileName = path;
-    } else {
-        fileName++;
-    }
-    if (!nFlag) {
-        snprintf(outputFilePath, sizeof(outputFilePath), "%.*sout_%s", (int)(fileName - path), path, fileName);
-        strncpy(res_path, outputFilePath, 255);
-    }
-    res_path[255] = '\0';
-
-    FILE *outputFile = fopen(outputFilePath, "w");
+    FILE *outputFile = fopen(res_path, "w");
     if (outputFile == NULL) {
         perror("Error opening output file");
-        fclose(file);
-        return EXIT_FAILURE;
+        CloseFiles(file, NULL);
+        return E_BAD_ALLOC;
     }
 
     char line[1024];
@@ -133,42 +98,28 @@ int HandlerOptS(char* path, bool nFlag, char* res_path) {
                 special_count++;
             }
         }
-        fprintf(outputFile, "%d\n", special_count);
+        fprintf(outputFile, "%d\n", special_count - 2);
     }
 
-    fclose(file);
-    fclose(outputFile);
+    CloseFiles(file, outputFile);
 
-    printf("Non-Latin letters, digits, and spaces counted and saved to %s.\n", outputFilePath);
-    return EXIT_SUCCESS;
+    printf("Non-alphabetic, non-digit, and non-space characters counted and saved to %s.\n", res_path);
+    return S_OK;
 }
 
-
+// Функция для замены символов на их ASCII коды в 16-ричном формате
 int HandlerOptA(char* path, bool nFlag, char* res_path) {
     FILE *file = fopen(path, "r");
     if (file == NULL) {
         perror("Error opening input file");
-        return EXIT_FAILURE;
+        return E_INVALID_ARG;
     }
 
-    char outputFilePath[256];
-    char *fileName = strrchr(path, '/');
-    if (!fileName) {
-        fileName = path;
-    } else {
-        fileName++;
-    }
-    if (!nFlag) {
-        snprintf(outputFilePath, sizeof(outputFilePath), "%.*sout_%s", (int)(fileName - path), path, fileName);
-        strncpy(res_path, outputFilePath, 255);
-    }
-    res_path[255] = '\0';
-
-    FILE *outputFile = fopen(outputFilePath, "w");
+    FILE *outputFile = fopen(res_path, "w");
     if (outputFile == NULL) {
         perror("Error opening output file");
-        fclose(file);
-        return EXIT_FAILURE;
+        CloseFiles(file, NULL);
+        return E_BAD_ALLOC;
     }
 
     char ch;
@@ -180,9 +131,8 @@ int HandlerOptA(char* path, bool nFlag, char* res_path) {
         }
     }
 
-    fclose(file);
-    fclose(outputFile);
+    CloseFiles(file, outputFile);
 
-    printf("Non-digit characters replaced with their ASCII codes and saved to %s.\n", outputFilePath);
-    return EXIT_SUCCESS;
+    printf("Non-digit characters replaced with their ASCII codes and saved to %s.\n", res_path);
+    return S_OK;
 }
