@@ -14,6 +14,29 @@ typedef enum KOpts {
 	kOptF
 } KOpts;
 
+int StringToInt(const char* str, int* number) {
+	*number = 0;
+	int sign = 1;
+	int i = 0;
+
+	if (str[0] == '-') {
+		sign = -1;
+		i = 1;
+	} else if (str[0] == '+') {
+		i = 1;
+	}
+
+	for (; str[i] != '\0'; i++) {
+		if (str[i] < '0' || str[i] > '9') {
+			return E_INVALID_FORMAT;
+		}
+		*number = *number * 10 + (str[i] - '0');
+	}
+
+	*number *= sign;
+	return S_OK;
+}
+
 int GetOpts(int argc, char** argv, KOpts* option, int* number) {
 	if (argc != 3) {
 		printf("Invalid number of arguments\nExpected: 2 arguments\n");
