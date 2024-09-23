@@ -4,6 +4,8 @@
 
 // Method declarations
 void sieve_of_eratosthenes(int x, bool *is_prime);
+double FactorialLog(int n);
+unsigned long long BinomialCoefficient(int n, int k);
 double CalculateELimit(double precision);
 double CalculateESeries(double precision);
 double CalculatePiLimit(double precision);

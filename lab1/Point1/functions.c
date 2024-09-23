@@ -1,7 +1,9 @@
-#include <stdio.h>
-#include <math.h>
-#include "error_codes.h"
 #include "functions.h"
+
+#include <math.h>
+#include <stdio.h>
+
+#include "error_codes.h"
 
 #define HEX_SIZE 100
 

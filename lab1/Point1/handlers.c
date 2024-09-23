@@ -1,10 +1,12 @@
+#include "handlers.h"
+
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
-#include "handlers.h"
-#include "functions.h"
+
 #include "error_codes.h"
+#include "functions.h"
 
 int HandlerOptH(int input_num) {
 	if (input_num <= 0 || input_num > 100) {

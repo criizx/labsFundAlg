@@ -1,6 +1,7 @@
+#include "functions.h"
+
 #include <math.h>
 #include <stdbool.h>
-#include "functions.h"
 
 void sieve_of_eratosthenes(int n, bool *is_prime) {
 	for (int i = 0; i <= n; i++) {
@@ -14,6 +15,23 @@ void sieve_of_eratosthenes(int n, bool *is_prime) {
 			}
 		}
 	}
+}
+
+double FactorialLog(int n) {
+	double result = 0.0;
+	for (int i = 1; i <= n; ++i) {
+		result += log(i);
+	}
+	return result;
+}
+
+unsigned long long BinomialCoefficient(int n, int k) {
+	unsigned long long result = 1;
+	for (int i = 0; i < k; ++i) {
+		result *= (n - i);
+		result /= (i + 1);
+	}
+	return result;
 }
 
 // e calculation
@@ -59,12 +77,12 @@ double CalculatePiLimit(double precision) {
 		unsigned long long factorial_n = 1, factorial_2n = 1, power_2n = 1;
 
 		for (int i = 1; i <= n; i++) {
-			factorial_n *= i;         // n!
-			power_2n *= 2;            // 2^n
+			factorial_n *= i;  // n!
+			power_2n *= 2;     // 2^n
 		}
 
 		for (int i = 1; i <= 2 * n; i++) {
-			factorial_2n *= i;        // (2n)!
+			factorial_2n *= i;  // (2n)!
 		}
 
 		pi_current = pow((power_2n * factorial_n), 4) / (n * pow((double)factorial_2n, 2));
@@ -89,7 +107,7 @@ double CalculatePiSeries(double precision) {
 	return pi_current * 4.0;
 }
 
-//ln2 calculation
+// ln2 calculation
 double CalculateLn2Limit(double precision) {
 	double ln2_prev = 0.0;
 	double ln2_current = 0.0;
@@ -118,15 +136,15 @@ double CalculateLn2Series(double precision) {
 	return ln2_current;
 }
 
-//sqr2 calculation
+// sqr2 calculation
 double CalculateSqr2Limit(double precision) {
-	double sqr2_prev = 0.0;
-	double sqr2_current = 0.0;
-	int x = -0.5;
+	double sqr2_prev = -1000.0;
+	double sqr2_current = -1000.0;
+	double x = -0.5;
 
 	do {
 		sqr2_prev = sqr2_current;
-		x = x - x * x / 2.0 + 1;
+		x = x - pow(x, 2.0) / 2.0 + 1.0;
 		sqr2_current = x;
 	} while (fabs(sqr2_current - sqr2_prev) > precision);
 
@@ -134,40 +152,35 @@ double CalculateSqr2Limit(double precision) {
 }
 
 double CalculateSqr2Series(double precision) {
-	double sqr2_prev = 0;
-	double sqr2_current = 0;
-	int n = 2;
+	double sqr2_prev = 1;
+	double sqr2_current = pow(2.0, 0.25);
+	double n = 3.0;
 
 	do {
 		sqr2_prev = sqr2_current;
-		sqr2_current *= pow(2, pow(2, n));
+		sqr2_current *= pow(2.0, pow(2.0, -n));
 		n++;
 	} while (fabs(sqr2_current - sqr2_prev) > precision);
 
 	return sqr2_current;
 }
 
-//Y calculation
+// Y calculation
 double CalculateYLimit(double precision) {
+	double y_current = 0.0;
+	double y_prev = 0.0;
 	int m = 1;
-	int factorialK = 1;
-	double y_current = 0;
-	double y_prev = 0;
+
 	do {
 		y_prev = y_current;
-		y_current = 0;
-		for (int k = 1; k <= m; ++k) {
-			unsigned long long binom_coeff = 1;
-			for (int i = 0; i < k; ++i) {
-				binom_coeff *= (k + 1 - i);
-				binom_coeff /= (i + 1);
-			}
+		y_current = 0.0;
 
-			for (int i = 1; i <= k; ++i) {
-				factorialK *= i;
-			}
-			y_current += binom_coeff * (pow(-1, k) / k) * log(factorialK);
+		for (int k = 1; k <= m; ++k) {
+			unsigned long long binom_coeff = BinomialCoefficient(m, k);
+			double term = binom_coeff * (pow(-1.0, k) / k) * FactorialLog(k);
+			y_current += term;
 		}
+
 		m++;
 	} while (fabs(y_current - y_prev) > precision);
 
@@ -176,14 +189,15 @@ double CalculateYLimit(double precision) {
 
 double CalculateYSeries(double precision) {
 	double y_prev = 0;
-	double y_current = 0;
-	int n = 2;
+	double y_current = 0.5 + -3.1415 * 3.1415 / 6.0;
+	int n = 3;
 	do {
 		y_prev = y_current;
-		y_current = -3.1415 * 3.1415 / 6;
-		for (int k = 2; k <= n; ++k) {
-			y_current += 1.0 / pow((int)sqrt(k), 2) - 1 / k;
+		y_current = -3.1415 * 3.1415 / 6.0;
+		for (double k = 2.0; k <= n; ++k) {
+			y_current += 1.0 / pow((int)sqrt(k), 2.0) - 1.0 / k;
 		}
+		n++;
 	} while (fabs(y_current - y_prev) > precision);
 	return y_current;
 }
