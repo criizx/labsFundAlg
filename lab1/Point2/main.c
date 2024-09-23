@@ -101,25 +101,40 @@ int main() {
 			break;
 
 		case METHOD_EQUATION:
-			printf("Enter lower bound: ");
-			scanf("%lf", &low);
-			printf("Enter upper bound: ");
-			scanf("%lf", &high);
-
 			switch (constant) {
 				case CONSTANT_E:
+					printf("Enter lower bound: ");
+					scanf("%lf", &low);
+					printf("Enter upper bound: ");
+					scanf("%lf", &high);
 					printf("e (equation) = %lf\n", CalculateRootUsingEquation(CalculateELimit, low, high, precision));
 					break;
 				case CONSTANT_PI:
+					printf("Enter lower bound: ");
+					scanf("%lf", &low);
+					printf("Enter upper bound: ");
+					scanf("%lf", &high);
 					printf("pi (equation) = %lf\n", CalculateRootUsingEquation(CalculatePiLimit, low, high, precision));
 					break;
 				case CONSTANT_LN2:
+					printf("Enter lower bound: ");
+					scanf("%lf", &low);
+					printf("Enter upper bound: ");
+					scanf("%lf", &high);
 					printf("ln(2) (equation) = %lf\n", CalculateRootUsingEquation(CalculateLn2Limit, low, high, precision));
 					break;
 				case CONSTANT_SQRT2:
+					printf("Enter lower bound: ");
+					scanf("%lf", &low);
+					printf("Enter upper bound: ");
+					scanf("%lf", &high);
 					printf("sqrt(2) (equation) = %lf\n", CalculateRootUsingEquation(CalculateSqr2Limit, low, high, precision));
 					break;
 				case CONSTANT_EULER_MASCHERONI:
+					printf("Enter lower bound: ");
+					scanf("%lf", &low);
+					printf("Enter upper bound: ");
+					scanf("%lf", &high);
 					printf("Euler-Mascheroni constant (equation) = %lf\n", CalculateRootUsingEquation(CalculateYLimit, low, high, precision));
 					break;
 				default: printf("Invalid constant selected\n"); return E_INPUT_ERROR;
