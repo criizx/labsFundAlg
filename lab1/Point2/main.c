@@ -6,13 +6,15 @@
 
 int main() {
 	double precision;
-	double low = 0.0, high = 1000.0;  // Границы по умолчанию для метода уравнения
+	double low = 0.0, high = 1000.0;
 
-	// Ввод точности
 	printf("Enter precision (e.g., 0.00001): ");
 	scanf("%lf", &precision);
+	if (precision < 0.00001) {
+		printf("Precision is too big");
+		return E_INPUT_ERROR;
+	}
 
-	// Вычисление всех констант всеми методами
 	printf("Calculating e:\n");
 	printf("Limit Method: %.15f\n", CalculateELimit(precision));
 	printf("Series Method: %.15f\n", CalculateESeries(precision));

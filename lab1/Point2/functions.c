@@ -2,6 +2,9 @@
 
 #include <math.h>
 #include <stdbool.h>
+#include <stdio.h>
+
+#define M_PI 3.14159265358979323846
 
 void sieve_of_eratosthenes(int n, bool *is_prime) {
 	for (int i = 0; i <= n; i++) {
@@ -84,9 +87,9 @@ double CalculatePiLimit(double precision) {
 		for (int i = 1; i <= 2 * n; i++) {
 			factorial_2n *= i;  // (2n)!
 		}
-
 		pi_current = pow((power_2n * factorial_n), 4) / (n * pow((double)factorial_2n, 2));
 		n++;
+		printf("%f %f\n", pi_prev, pi_current);
 	} while (fabs(pi_current - pi_prev) > precision);
 
 	return pi_current;
@@ -167,7 +170,7 @@ double CalculateSqr2Series(double precision) {
 
 // Y calculation
 double CalculateYLimit(double precision) {
-	double y_current = 0.0;
+	double y_current = 1.0;
 	double y_prev = 0.0;
 	int m = 1;
 
@@ -189,19 +192,16 @@ double CalculateYLimit(double precision) {
 
 double CalculateYSeries(double precision) {
 	double y_prev = 0;
-	double y_current = 0.5 + -3.1415 * 3.1415 / 6.0;
-	int n = 3;
+	double y_current = -(M_PI * M_PI / 6.0);
+	double n = 2.0;
 	do {
 		y_prev = y_current;
-		y_current = -3.1415 * 3.1415 / 6.0;
-		for (double k = 2.0; k <= n; ++k) {
-			y_current += 1.0 / pow((int)sqrt(k), 2.0) - 1.0 / k;
-		}
+		int sqrtN = (int)floor(sqrt(n));
+		y_current += 1.0 / pow(sqrtN, 2.0) - 1.0 / n;
 		n++;
-	} while (fabs(y_current - y_prev) > precision);
+	} while (fabs(y_prev - y_current) > precision);
 	return y_current;
 }
-
 // Binary search for equation root calculation
 double CalculateRootUsingEquation(double (*func)(double, double), double low, double high, double precision) {
 	double mid;

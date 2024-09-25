@@ -8,8 +8,7 @@ typedef enum {
 	E_OUT_OF_RANGE = 3,
 	E_UNKNOWN_OPT = 4,
 	E_INVALID_FORMAT = 5,
-	E_CALCULATION_OVERFLOW = 6,
-	E_INVALID_INPUT = 7
+	E_CALCULATION_OVERFLOW = 6
 } ErrorCode;
 
 #endif
