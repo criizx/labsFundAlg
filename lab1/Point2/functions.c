@@ -71,28 +71,15 @@ double CalculateESeries(double precision) {
 
 // pi calculation
 double CalculatePiLimit(double precision) {
-	double pi_prev = 0.0;
-	double pi_current = 0.0;
+	double piCurr = 4.0;
+	double piPrev = 0;
 	int n = 1;
-
 	do {
-		pi_prev = pi_current;
-		unsigned long long factorial_n = 1, factorial_2n = 1, power_2n = 1;
-
-		for (int i = 1; i <= n; i++) {
-			factorial_n *= i;  // n!
-			power_2n *= 2;     // 2^n
-		}
-
-		for (int i = 1; i <= 2 * n; i++) {
-			factorial_2n *= i;  // (2n)!
-		}
-		pi_current = pow((power_2n * factorial_n), 4) / (n * pow((double)factorial_2n, 2));
+		piPrev = piCurr;
+		piCurr *= (4 * (n + 1) * n) / pow(2 * n + 1, 2);
 		n++;
-		printf("%f %f\n", pi_prev, pi_current);
-	} while (fabs(pi_current - pi_prev) > precision);
-
-	return pi_current;
+	} while (fabs(piCurr - piPrev) > precision);
+	return piCurr;
 }
 
 double CalculatePiSeries(double precision) {
@@ -191,16 +178,21 @@ double CalculateYLimit(double precision) {
 }
 
 double CalculateYSeries(double precision) {
-	double y_prev = 0;
-	double y_current = -(M_PI * M_PI / 6.0);
-	double n = 2.0;
+	double yPrev = 0;
+	double n = 3;
+	precision = 0.0000000000001;
+	double yCurr = 0.5;
+	double sum = 0;
 	do {
-		y_prev = y_current;
-		int sqrtN = (int)floor(sqrt(n));
-		y_current += 1.0 / pow(sqrtN, 2.0) - 1.0 / n;
+		yPrev = yCurr;
+		sum = ((1.0 / pow(floor(sqrt(n)), 2)) - (1.0 / n));
+		yCurr += sum;
+		if (precision > sum) {
+			yPrev = 0;
+		}
 		n++;
-	} while (fabs(y_prev - y_current) > precision);
-	return y_current;
+	} while (fabs(yCurr - yPrev) > precision);
+	return (yCurr - (M_PI * M_PI / 6));
 }
 // Binary search for equation root calculation
 double CalculateRootUsingEquation(double (*func)(double, double), double low, double high, double precision) {
