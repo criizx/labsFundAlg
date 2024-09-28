@@ -3,46 +3,63 @@
 #include <string.h>
 
 #include "errors.h"
-#include "functions.h"
+#include "handlers.h"
 
-int main(int argc, char *argv[]) {
+typedef enum { kOptQ, kOptM, kOptT, kOptUnknown } KOpts;
+
+int GetOpts(int argc, char** argv, KOpts* option, int* args_count, double* args) {
 	if (argc < 2) {
 		printf("Error: No flag provided.\n");
 		return ARG_ERROR;
 	}
 
-	char *flag = argv[1];
-
-	if (strcmp(flag, "-q") == 0) {
-		if (argc != 6) {
-			printf("Error: Invalid number of arguments for -q flag.\n");
-			return ARG_ERROR;
-		}
-		double epsilon = atof(argv[2]);
-		double a = atof(argv[3]);
-		double b = atof(argv[4]);
-		double c = atof(argv[5]);
-		solve_quadratic(epsilon, a, b, c);
-	} else if (strcmp(flag, "-m") == 0) {
-		if (argc != 4) {
-			printf("Error: Invalid number of arguments for -m flag.\n");
-			return ARG_ERROR;
-		}
-		int num1 = atoi(argv[2]);
-		int num2 = atoi(argv[3]);
-		check_multiple(num1, num2);
-	} else if (strcmp(flag, "-t") == 0) {
-		if (argc != 6) {
-			printf("Error: Invalid number of arguments for -t flag.\n");
-			return ARG_ERROR;
-		}
-		double epsilon = atof(argv[2]);
-		double side1 = atof(argv[3]);
-		double side2 = atof(argv[4]);
-		double side3 = atof(argv[5]);
-		check_triangle(epsilon, side1, side2, side3);
+	if (strcmp(argv[1], "-q") == 0) {
+		*option = kOptQ;
+		*args_count = 4;
+	} else if (strcmp(argv[1], "-m") == 0) {
+		*option = kOptM;
+		*args_count = 2;
+	} else if (strcmp(argv[1], "-t") == 0) {
+		*option = kOptT;
+		*args_count = 4;
 	} else {
-		printf("Error: Unknown flag: %s\n", flag);
+		*option = kOptUnknown;
+		return FLAG_ERROR;
+	}
+
+	if (argc != *args_count + 2) {
+		printf("Error: Invalid number of arguments for %s flag.\n", argv[1]);
+		return ARG_ERROR;
+	}
+
+	for (int i = 0; i < *args_count; i++) {
+		args[i] = atof(argv[i + 2]);
+	}
+
+	return SUCCESS;
+}
+
+int main(int argc, char* argv[]) {
+	KOpts opt = kOptUnknown;
+	int args_count = 0;
+	double args[4] = {0};
+
+	int (*handlers[])(double*) = {HandleOptQ, HandleOptM, HandleOptT};
+
+	int error_code = GetOpts(argc, argv, &opt, &args_count, args);
+	if (error_code != SUCCESS) {
+		printf("Error occurred: %d\n", error_code);
+		return error_code;
+	}
+
+	if (opt != kOptUnknown) {
+		error_code = handlers[opt](args);
+		if (error_code != SUCCESS) {
+			printf("Handler error: %d\n", error_code);
+			return error_code;
+		}
+	} else {
+		printf("Error: Unknown option provided.\n");
 		return FLAG_ERROR;
 	}
 

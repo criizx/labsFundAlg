@@ -37,7 +37,11 @@ int findMinBase(const char* num) {
 			maxDigit = value + 1;
 		}
 	}
-	return maxDigit > 36 ? 36 : maxDigit;
+	if (maxDigit > 36) {
+		return 36;
+	} else {
+		return maxDigit;
+	}
 }
 
 long long convertToDecimal(const char* num, int base) {

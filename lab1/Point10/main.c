@@ -6,22 +6,7 @@
 #include "converter.h"
 #include "errors.h"
 
-void printError(ErrorCode code) {
-	switch (code) {
-		case ERR_INVALID_BASE:
-			printf("Error: base must be between 2 and 36.\n");
-			break;
-		case ERR_INVALID_NUMBER:
-			printf("Error: invalid number entered.\n");
-			break;
-		case ERR_NO_NUMBERS_ENTERED:
-			printf("Error: no numbers were entered.\n");
-			break;
-		case ERR_OK:
-		default:
-			break;
-	}
-}
+void printError(ErrorCode code);
 
 int main() {
 	int base;
@@ -29,7 +14,7 @@ int main() {
 	scanf("%d", &base);
 
 	if (base < 2 || base > 36) {
-		printError(ERR_INVALID_BASE);
+		printf("ERR_INVALID_BASE");
 		return ERR_INVALID_BASE;
 	}
 
@@ -39,7 +24,12 @@ int main() {
 	int isNegative = 0;
 	ErrorCode error = ERR_OK;
 
+	int *numbers = NULL;
+	int count = 0;
+	int capacity = 0;
+
 	printf("You selected base %d. Now enter numbers in base %d (type 'Stop' to finish):\n", base, base);
+
 	while (1) {
 		scanf("%s", input);
 
@@ -53,6 +43,21 @@ int main() {
 			error = ERR_INVALID_NUMBER;
 			continue;
 		}
+
+		if (count == capacity) {
+			if (capacity == 0) {
+				capacity = 10;
+			} else {
+				capacity *= 2;
+			}
+			numbers = realloc(numbers, capacity * sizeof(int));
+			if (numbers == NULL) {
+				printf("Memory allocation error!\n");
+				return 1;
+			}
+		}
+
+		numbers[count++] = number;
 
 		if (firstNumber) {
 			maxNumber = number;
@@ -68,6 +73,7 @@ int main() {
 
 	if (firstNumber) {
 		printError(ERR_NO_NUMBERS_ENTERED);
+		free(numbers);
 		return ERR_NO_NUMBERS_ENTERED;
 	}
 
@@ -78,12 +84,36 @@ int main() {
 	}
 
 	int bases[] = {9, 18, 27, 36};
-	int numToConvert = (isNegative ? -abs(maxNumber) : abs(maxNumber));
+	int numToConvert = 0;
+	if (isNegative) {
+		numToConvert = -abs(maxNumber);
+	} else {
+		numToConvert = abs(maxNumber);
+	}
 	for (int i = 0; i < 4; i++) {
 		char converted[50];
 		convertToBase(numToConvert, bases[i], converted);
 		printf("Representation in base %d: %s\n", bases[i], converted);
 	}
 
+	free(numbers);
+
 	return ERR_OK;
+}
+
+void printError(ErrorCode code) {
+	switch (code) {
+		case ERR_INVALID_BASE:
+			printf("Error: base must be between 2 and 36.\n");
+			break;
+		case ERR_INVALID_NUMBER:
+			printf("Error: invalid number entered.\n");
+			break;
+		case ERR_NO_NUMBERS_ENTERED:
+			printf("Error: no numbers were entered.\n");
+			break;
+		case ERR_OK:
+		default:
+			break;
+	}
 }
