@@ -1,0 +1,7 @@
+Hello, World! 1234
+Test line with special chars: @#$%^&*
+Numbers: 9876543210
+Latin letters: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
+Non-Latin letters and symbols: 你好，世界！Привет, мир!
+Spaces and digits: 123 456 789
+ASCII test: ~`!@#$%^&*()-_=+[]{}|;:'",.<>?/

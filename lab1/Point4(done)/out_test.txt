@@ -1,0 +1,7 @@
+Hello, World! 
+Test line with special chars: @#$%^&*
+Numbers: 
+Latin letters: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
+Non-Latin letters and symbols: 你好，世界！Привет, мир!
+Spaces and digits:   
+ASCII test: ~`!@#$%^&*()-_=+[]{}|;:'",.<>?/
