@@ -73,13 +73,13 @@ double evaluatePolynomial(double x, int n, ...) {
 
 int isKaprekar(int num) {
 	int square = num * num;
-	char squareStr[20];
+	char *squareStr = (char*)malloc(sizeof(char) * 20);
 	sprintf(squareStr, "%d", square);
 
 	int len = strlen(squareStr);
 	for (int i = 1; i < len; i++) {
-		char leftStr[20] = {0};
-		char rightStr[20] = {0};
+		char *leftStr = (char*)malloc(sizeof(char) * (i + 1));
+		char *rightStr = (char*)malloc(sizeof(char) * (len - i + 1));
 		strncpy(leftStr, squareStr, i);
 		strcpy(rightStr, squareStr + i);
 
@@ -87,9 +87,15 @@ int isKaprekar(int num) {
 		int right = atoi(rightStr);
 
 		if (right != 0 && left + right == num) {
+            free(leftStr);
+            free(rightStr);
+            free(squareStr);
 			return 1;
 		}
+        free(leftStr);
+        free(rightStr);
 	}
+    free(squareStr);
 	return 0;
 }
 
