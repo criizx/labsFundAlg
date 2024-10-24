@@ -17,8 +17,8 @@ int isConvexPolygon(int numPoints, ...) {
 	va_list args;
 	va_start(args, numPoints);
 
-	double* x = malloc(numPoints * sizeof(double));
-	double* y = malloc(numPoints * sizeof(double));
+	double* x = (double*)malloc(numPoints * sizeof(double));
+	double* y = (double*)malloc(numPoints * sizeof(double));
 
 	if (!x || !y) {
 		printf("Error: Memory allocation failed\n");
@@ -73,29 +73,31 @@ double evaluatePolynomial(double x, int n, ...) {
 
 int isKaprekar(int num) {
 	int square = num * num;
-	char *squareStr = (char*)malloc(sizeof(char) * 20);
+	int len = snprintf(NULL, 0, "%d", square);
+	char* squareStr = (char*)malloc((len + 1) * sizeof(char));
 	sprintf(squareStr, "%d", square);
 
-	int len = strlen(squareStr);
 	for (int i = 1; i < len; i++) {
-		char *leftStr = (char*)malloc(sizeof(char) * (i + 1));
-		char *rightStr = (char*)malloc(sizeof(char) * (len - i + 1));
+		char* leftStr = (char*)malloc((i + 1) * sizeof(char));
+		char* rightStr = (char*)malloc((len - i + 1) * sizeof(char));
+
 		strncpy(leftStr, squareStr, i);
+		leftStr[i] = '\0';
 		strcpy(rightStr, squareStr + i);
 
 		int left = atoi(leftStr);
 		int right = atoi(rightStr);
 
+		free(leftStr);
+		free(rightStr);
+
 		if (right != 0 && left + right == num) {
-            free(leftStr);
-            free(rightStr);
-            free(squareStr);
+			free(squareStr);
 			return 1;
 		}
-        free(leftStr);
-        free(rightStr);
 	}
-    free(squareStr);
+
+	free(squareStr);
 	return 0;
 }
 
@@ -106,6 +108,7 @@ void findKaprekar(int base, int numStrings, ...) {
 	for (int i = 0; i < numStrings; i++) {
 		const char* numStr = va_arg(args, const char*);
 		int num = strtol(numStr, NULL, base);
+
 		if (isKaprekar(num)) {
 			printf("%s (%d) is a Kaprekar number\n", numStr, num);
 		} else {
