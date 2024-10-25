@@ -1,70 +1,97 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void search_in_file(const char *substr, const char *file_path) {
-	FILE *file = fopen(file_path, "r");
-	if (!file) {
-		perror("Failed to open file");
+void buildPrefixArray(const char* pattern, int M, int* prefixArray) {
+	int length = 0;
+	prefixArray[0] = 0;
+	int i = 1;
+
+	while (i < M) {
+		if (pattern[i] == pattern[length]) {
+			length++;
+			prefixArray[i] = length;
+			i++;
+		} else {
+			if (length != 0) {
+				length = prefixArray[length - 1];
+			} else {
+				prefixArray[i] = 0;
+				i++;
+			}
+		}
+	}
+}
+
+void KMPsearch(const char* pattern, const char* filePath) {
+	FILE* file = fopen(filePath, "r");
+	if (file == NULL) {
+		printf("Failed to open file: %s\n", filePath);
 		return;
 	}
 
-	int line = 1, col = 1;
-	int substr_len = 0;
-	while (substr[substr_len] != '\0') {
-		substr_len++;
-	}
+	int M = strlen(pattern);
+	int* prefixArray = (int*)malloc(M * sizeof(int));
+	buildPrefixArray(pattern, M, prefixArray);
 
-	int index = 0;
-	int ch;
-	int start_col = 1;
-	int possible_match = 0;
+	int j = 0;
+	int lineNumber = 1;
+	int startPosition = 0;
+	int matchStartLine = 1;
 
-	while ((ch = fgetc(file)) != EOF) {
-		if (ch == substr[index]) {
-			if (index == 0) {
-				start_col = col;
+	char* line = NULL;
+	size_t lineBufferSize = 0;
+
+	while (getline(&line, &lineBufferSize, file) != -1) {
+		int lineLength = strlen(line);
+
+		for (int i = 0; i < lineLength; i++) {
+			while (j > 0 && line[i] != pattern[j]) {
+				j = prefixArray[j - 1];
+				startPosition = i - j;
+				if (i < j) {
+					lineNumber++;
+				}
 			}
-			index++;
-			if (index == substr_len) {
-				printf("Found match at line %d, col %d in file %s\n", line, start_col, file_path);
-				index = 0;
-				possible_match = 0;
+			if (line[i] == pattern[j]) {
+				if (j == 0) {
+					startPosition = i + 1;
+					matchStartLine = lineNumber;
+				}
+				j++;
 			}
-		} else {
-			if (index > 0) {
-				fseek(file, -(index), SEEK_CUR);
-				col -= index;
-				index = 0;
+
+			if (j == M) {
+				printf("Match found in file %s line %d at position %d\n", filePath, matchStartLine, startPosition);
+				j = prefixArray[j - 1];
+				matchStartLine = lineNumber;
 			}
 		}
 
-		if (ch == '\n') {
-			line++;
-			col = 1;
-		} else {
-			col++;
-		}
+		lineNumber++;
 	}
 
+	free(prefixArray);
+	free(line);
 	fclose(file);
 }
 
-void search_in_files(const char *substr, int num_files, ...) {
+void searchInFiles(const char* pattern, int fileCount, ...) {
 	va_list files;
-	va_start(files, num_files);
+	va_start(files, fileCount);
 
-	for (int i = 0; i < num_files; i++) {
-		const char *file_path = va_arg(files, const char *);
-		search_in_file(substr, file_path);
+	for (int i = 0; i < fileCount; i++) {
+		const char* filePath = va_arg(files, const char*);
+		KMPsearch(pattern, filePath);
 	}
 
 	va_end(files);
 }
 
 int main() {
-	const char *substr = "ab\nab";
-	search_in_files(substr, 2, "file1.txt", "file2.txt", "file3.txt");
+	const char* pattern = "ab\nab";
+	searchInFiles(pattern, 1, "file1.txt");
 
 	return 0;
 }
