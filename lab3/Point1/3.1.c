@@ -2,9 +2,6 @@
 #include <stdlib.h>
 
 unsigned int bitwiseAdd(int a, int b) {
-    if (b < 0) {
-        b = bitwiseAdd(~(-b), 1);
-    }
     while (b != 0) {
         unsigned int carry = a & b;
         a = a ^ b;
@@ -13,9 +10,13 @@ unsigned int bitwiseAdd(int a, int b) {
     return a;
 }
 
+unsigned int bitwiseNegate(int a) {
+    return bitwiseAdd(~a, 1);
+}
+
 void convertToBase2R(unsigned int num, int r) {
     unsigned int base = 1 << r;
-    unsigned int mask = bitwiseAdd(base, bitwiseAdd(~1, 1));
+    unsigned int mask = bitwiseAdd(base, bitwiseNegate(1));
 
     char* result = (char*) malloc(32 * sizeof(char));
     if (result == NULL) {
@@ -31,7 +32,7 @@ void convertToBase2R(unsigned int num, int r) {
     }
 
     printf("Number in base 2^%d: ", r);
-    for (int j = bitwiseAdd(i, bitwiseAdd(~1, 1)); j >= 0; j = bitwiseAdd(j, bitwiseAdd(~1, 1))) {
+    for (int j = bitwiseAdd(i, bitwiseNegate(1)); j >= 0; j = bitwiseAdd(j, bitwiseNegate(1))) {
         if (r == 1 || r == 2 || r == 4) {
             printf("%X", result[j]);
         } 
@@ -42,7 +43,7 @@ void convertToBase2R(unsigned int num, int r) {
             if (result[j] < 10) {
                 printf("%d", result[j]);
             } else {
-                printf("%c", bitwiseAdd('A', bitwiseAdd(result[j], bitwiseAdd(~10, 1))));
+                printf("%c", bitwiseAdd('A', bitwiseAdd(result[j], bitwiseNegate(10))));
             }
         }
     }
