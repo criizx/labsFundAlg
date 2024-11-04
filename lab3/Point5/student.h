@@ -2,11 +2,11 @@
 #define STUDENT_H
 
 typedef struct {
-	int id;
-	char *firstName;
-	char *lastName;
-	char *group;
-	unsigned char *grades;
+    int id;
+    char *firstName;
+    char *lastName;
+    char *group;
+    unsigned char *grades;
 } Student;
 
 Student *loadStudentsFromFile(const char *filePath, int *count);
