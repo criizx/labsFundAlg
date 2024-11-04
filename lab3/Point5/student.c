@@ -23,7 +23,6 @@ Student *loadStudentsFromFile(const char *filePath, int *count) {
             return NULL;
         }
 
-        // Используем %ms для динамического выделения памяти под строки
         fscanf(file, "%d %ms %ms %ms", &students[i].id, &students[i].firstName, &students[i].lastName, &students[i].group);
         
         for (int j = 0; j < 5; j++) {
