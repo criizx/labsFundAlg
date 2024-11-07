@@ -55,6 +55,36 @@ void addMailInteractive(Post* post) {
     free(deliveryTime);
 }
 
+void deleteMailById(Post* post) {
+    char *mailId;
+    printf("Enter mail ID to delete: ");
+    scanf("%ms", &mailId);
+
+    int index = -1;
+    for (int i = 0; i < post->mailCount; i++) {
+        if (areStringsEqual(&post->mails[i].mailId, &(String){mailId, 14})) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index != -1) {
+        deleteMail(&post->mails[index]);
+
+        for (int i = index; i < post->mailCount - 1; i++) {
+            post->mails[i] = post->mails[i + 1];
+        }
+
+        post->mailCount--;
+        post->mails = realloc(post->mails, post->mailCount * sizeof(Mail));
+        printf("Mail with ID %s deleted successfully.\n", mailId);
+    } else {
+        printf("Mail with ID %s not found.\n", mailId);
+    }
+
+    free(mailId);
+}
+
 void searchMailById(Post* post) {
     char *mailId;
     printf("Enter mail ID to search: ");
@@ -103,7 +133,7 @@ int main() {
 
     int choice;
     while (1) {
-        printf("1. Add Mail\n2. Search Mail by ID\n3. Show Delivered Mails\n4. Show Expired Mails\n5. Exit\nEnter choice: ");
+        printf("1. Add Mail\n2. Delete Mail by ID\n3. Search Mail by ID\n4. Show Delivered Mails\n5. Show Expired Mails\n6. Exit\nEnter choice: ");
         scanf("%d", &choice);
         switch (choice) {
             case 1:
@@ -111,15 +141,18 @@ int main() {
                 sortMails(&post);
                 break;
             case 2:
-                searchMailById(&post);
+                deleteMailById(&post);
                 break;
             case 3:
-                printDeliveredMails(&post);
+                searchMailById(&post);
                 break;
             case 4:
-                printExpiredMails(&post);
+                printDeliveredMails(&post);
                 break;
             case 5:
+                printExpiredMails(&post);
+                break;
+            case 6:
                 deletePost(&post);
                 deleteAddress(&officeAddress);
                 return 0;
