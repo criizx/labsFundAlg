@@ -16,16 +16,15 @@ Address createAddress(const char* city, const char* street, unsigned int houseNu
                       unsigned int apartmentNumber, const char* postalCode);
 void deleteAddress(Address* address);
 
-typedef struct {
-	Address recipient;
+typedef struct {	Address recipient;
 	float weight;
 	String mailId;
 	String creationTime;
 	String deliveryTime;
 } Mail;
 
-Mail createMail(Address recipient, float weight, const char* mailId, const char* creationTime,
-                const char* deliveryTime);
+Mail createMail(Address recipient, float weight, const char* mailId, const char* creationTime);
+void setDeliveryTime(Mail* mail, char* deliveryTime);
 void deleteMail(Mail* mail);
 int compareMail(const Mail* m1, const Mail* m2);
 int validateAddress(const char* city, const char* street, unsigned int houseNumber, const char* building,

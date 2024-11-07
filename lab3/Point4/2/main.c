@@ -43,13 +43,9 @@ void addMailInteractive(Post* post) {
 	printf("Enter creation time (dd:MM:yyyy hh:mm:ss): ");
 
 	fgets(creationTime, sizeof(creationTime), stdin);
-	
-	printf("Enter delivery time (dd:MM:yyyy hh:mm:ss): ");
-	getchar();
-	fgets(deliveryTime, sizeof(deliveryTime), stdin);
 
 	Address recipient = createAddress(city, street, houseNumber, building, apartmentNumber, postalCode);
-	Mail mail = createMail(recipient, weight, mailId, creationTime, deliveryTime);
+	Mail mail = createMail(recipient, weight, mailId, creationTime);
 	addMail(post, mail);
 
 	free(city);
@@ -106,25 +102,26 @@ void searchMailById(Post* post) {
 
 void printDeliveredMails(Post* post) {
 	time_t currentTime = time(NULL);
-
 	for (int i = 0; i < post->mailCount; i++) {
 		struct tm deliveryTm = {0};
-		strptime(post->mails[i].deliveryTime.data, "%d:%m:%Y %H:%M:%S", &deliveryTm);
-		time_t deliveryTime = mktime(&deliveryTm);
-		if (difftime(currentTime, deliveryTime) >= 0) {
-			printMail(&post->mails[i]);
+		if (!strcmp(!post->mails[i].deliveryTime.data, "")){
+			strptime(post->mails[i].deliveryTime.data, "%d:%m:%Y %H:%M:%S", &deliveryTm);
+			time_t deliveryTime = mktime(&deliveryTm);
+			if (difftime(currentTime, deliveryTime) >= 0 ) {
+				printMail(&post->mails[i]);
+			}
 		}
 	}
 }
 
 void printExpiredMails(Post* post) {
 	time_t currentTime = time(NULL);
-
+	int diff = 180 * 60 * 60 * 24;
 	for (int i = 0; i < post->mailCount; i++) {
-		struct tm deliveryTm = {0};
-		strptime(post->mails[i].deliveryTime.data, "%d:%m:%Y %H:%M:%S", &deliveryTm);
-		time_t deliveryTime = mktime(&deliveryTm);
-		if (difftime(currentTime, deliveryTime) > 0) {
+		struct tm createTm = {0};
+		strptime(post->mails[i].creationTime.data, "%d:%m:%Y %H:%M:%S", &createTm);
+		time_t creationTime = mktime(&createTm);
+		if (difftime(currentTime, creationTime) > diff) {
 			printMail(&post->mails[i]);
 		}
 	}
@@ -138,7 +135,7 @@ int main() {
 	while (1) {
 		printf(
 		    "1. Add Mail\n2. Delete Mail by ID\n3. Search Mail by ID\n4. Show Delivered Mails\n5. Show Expired "
-		    "Mails\n6. Exit\nEnter choice: ");
+		    "Mails\n 0. Exit\nEnter choice: ");
 		scanf("%d", &choice);
 		switch (choice) {
 			case 1:
@@ -158,6 +155,12 @@ int main() {
 				printExpiredMails(&post);
 				break;
 			case 6:
+				char* deliveryTime;
+				getchar();
+				printf("Enter creation time (dd:MM:yyyy hh:mm:ss): ");
+
+				fgets(deliveryTime, sizeof(deliveryTime), stdin);
+			case 0:
 				deletePost(&post);
 				deleteAddress(&officeAddress);
 				return 0;
