@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "../string/string.h"
@@ -42,8 +43,10 @@ void addMailInteractive(Post* post) {
 	getchar();
 	printf("Enter creation time (dd:MM:yyyy hh:mm:ss): ");
 
-	fgets(creationTime, sizeof(creationTime), stdin);
-
+	if (fgets(creationTime, sizeof(creationTime), stdin) == NULL) {
+		fprintf(stderr, "Error reading creation time.\n");
+		exit(EXIT_FAILURE);
+	}
 	Address recipient = createAddress(city, street, houseNumber, building, apartmentNumber, postalCode);
 	Mail mail = createMail(recipient, weight, mailId, creationTime);
 	addMail(post, mail);
@@ -84,16 +87,14 @@ void deleteMailById(Post* post) {
 	free(mailId);
 }
 
-void searchMailById(Post* post) {
+Mail* searchMailById(Post* post) {
 	char* mailId;
 	printf("Enter mail ID to search: ");
 	scanf("%ms", &mailId);
 
 	for (int i = 0; i < post->mailCount; i++) {
 		if (areStringsEqual(&post->mails[i].mailId, &(String){mailId, 14})) {
-			printMail(&post->mails[i]);
-			free(mailId);
-			return;
+			return &post->mails[i];
 		}
 	}
 	printf("Mail with ID %s not found.\n", mailId);
@@ -104,10 +105,10 @@ void printDeliveredMails(Post* post) {
 	time_t currentTime = time(NULL);
 	for (int i = 0; i < post->mailCount; i++) {
 		struct tm deliveryTm = {0};
-		if (!strcmp(!post->mails[i].deliveryTime.data, "")){
+		if (!strcmp(post->mails[i].deliveryTime.data, "")) {
 			strptime(post->mails[i].deliveryTime.data, "%d:%m:%Y %H:%M:%S", &deliveryTm);
 			time_t deliveryTime = mktime(&deliveryTm);
-			if (difftime(currentTime, deliveryTime) >= 0 ) {
+			if (difftime(currentTime, deliveryTime) >= 0) {
 				printMail(&post->mails[i]);
 			}
 		}
@@ -135,7 +136,7 @@ int main() {
 	while (1) {
 		printf(
 		    "1. Add Mail\n2. Delete Mail by ID\n3. Search Mail by ID\n4. Show Delivered Mails\n5. Show Expired "
-		    "Mails\n 0. Exit\nEnter choice: ");
+		    "Mails\n6. Add Delivery time\n0. Exit\nEnter choice: ");
 		scanf("%d", &choice);
 		switch (choice) {
 			case 1:
@@ -146,7 +147,7 @@ int main() {
 				deleteMailById(&post);
 				break;
 			case 3:
-				searchMailById(&post);
+				printMail(searchMailById(&post));
 				break;
 			case 4:
 				printDeliveredMails(&post);
@@ -156,10 +157,11 @@ int main() {
 				break;
 			case 6:
 				char* deliveryTime;
+				Mail* mail = searchMailById(&post);
 				getchar();
 				printf("Enter creation time (dd:MM:yyyy hh:mm:ss): ");
-
 				fgets(deliveryTime, sizeof(deliveryTime), stdin);
+				setDeliveryTime(mail, deliveryTime);
 			case 0:
 				deletePost(&post);
 				deleteAddress(&officeAddress);

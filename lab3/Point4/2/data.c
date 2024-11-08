@@ -18,42 +18,35 @@ int validateAddress(const char* city, const char* street, unsigned int houseNumb
 	return 0;
 }
 
-int validateMail(const Address* recipient, float weight, const char* mailId, const char* creationTime, const char* deliveryTime) {
+int validateMail(const Address* recipient, float weight, const char* mailId, const char* creationTime,
+                 const char* deliveryTime) {
 	if (!recipient || weight < 0) return -1;
-
-	// Валидация mailId: должно быть 14 цифр
 	if (strlen(mailId) != 14) return -1;
 	for (int i = 0; i < 14; i++) {
 		if (!isdigit(mailId[i])) return -1;
 	}
-
-	// Формат строки даты и времени
 	const char* timeFormat = "%d:%m:%Y %H:%M:%S";
 	struct tm creationTm = {0};
 	struct tm deliveryTm = {0};
-
-	// Проверка строки даты и времени для creationTime
 	if (!strptime(creationTime, timeFormat, &creationTm)) {
-		return -1;  // Неверный формат даты и времени
+		return -1;
 	}
-	if (deliveryTime == NULL){
-	// Проверка строки даты и времени для deliveryTime
-	if (!strptime(deliveryTime, timeFormat, &deliveryTm)) {
-		return -1;  // Неверный формат даты и времени
+	if (deliveryTime == "") {
+		if (!strptime(deliveryTime, timeFormat, &deliveryTm)) {
+			return -1;
+		}
+
+		time_t creationEpoch = mktime(&creationTm);
+		time_t deliveryEpoch = mktime(&deliveryTm);
+
+		if (creationEpoch == -1 || deliveryEpoch == -1) {
+			return -1;
+		}
+
+		if (difftime(deliveryEpoch, creationEpoch) < 0) {
+			return -1;
+		}
 	}
-
-	// Преобразуем в `time_t` для сравнения
-	time_t creationEpoch = mktime(&creationTm);
-	time_t deliveryEpoch = mktime(&deliveryTm);
-
-	if (creationEpoch == -1 || deliveryEpoch == -1) {
-		return -1;  // Ошибка преобразования времени
-	}
-
-	// Проверка, что deliveryTime наступает после creationTime
-	if (difftime(deliveryEpoch, creationEpoch) < 0) {
-		return -1;  // deliveryTime раньше creationTime
-	}}
 
 	return 0;
 }
@@ -93,18 +86,17 @@ Mail createMail(Address recipient, float weight, const char* mailId, const char*
 	mail.weight = weight;
 	mail.mailId = createString(mailId);
 	mail.creationTime = createString(creationTime);
-	mail.deliveryTime = createString(NULL);
+	mail.deliveryTime = createString("");
 	return mail;
 }
 
 void setDeliveryTime(Mail* mail, char* deliveryTime) {
-	if (validateMail(&mail->recipient, mail->weight, &mail->mailId, &mail->creationTime, deliveryTime) != 0) {
+	if (validateMail(&mail->recipient, mail->weight, mail->mailId.data, mail->creationTime.data, deliveryTime) != 0) {
 		fprintf(stderr, "Invalid mail data\n");
 		exit(EXIT_FAILURE);
 	}
 
 	mail->deliveryTime = createString(deliveryTime);
-	return mail;
 }
 
 void deleteMail(Mail* mail) {

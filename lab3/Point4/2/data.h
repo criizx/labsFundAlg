@@ -16,7 +16,8 @@ Address createAddress(const char* city, const char* street, unsigned int houseNu
                       unsigned int apartmentNumber, const char* postalCode);
 void deleteAddress(Address* address);
 
-typedef struct {	Address recipient;
+typedef struct {
+	Address recipient;
 	float weight;
 	String mailId;
 	String creationTime;

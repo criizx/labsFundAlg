@@ -1,6 +1,6 @@
 #include "post.h"
 
-#include <stdio.h>  // Для вывода ошибок
+#include <stdio.h>
 #include <stdlib.h>
 
 Post createPost(Address* currentOfficeAddress) {
