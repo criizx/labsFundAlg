@@ -55,7 +55,6 @@ int validateMail(const Address *recipient, float weight, const char *mailId,
       return -1;
     }
   }
-  printf("popa");
   return 0;
 }
 
