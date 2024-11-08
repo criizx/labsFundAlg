@@ -7,6 +7,8 @@
 #include "data.h"
 #include "post.h"
 
+#define diff (180 * 24 * 60 * 60)
+
 void printMail(const Mail* mail) {
 	printf("Mail ID: %s\n", mail->mailId.data);
 	printf("Recipient: %s, %s, House: %u, Building: %s, Apartment: %u, Postal Code: %s\n", mail->recipient.city.data,
@@ -22,7 +24,6 @@ void addMailInteractive(Post* post) {
 	unsigned int houseNumber, apartmentNumber;
 	float weight;
 	char creationTime[20], deliveryTime[20], mailId[15];
-
 	printf("Enter recipient city: ");
 	scanf("%ms", &city);
 	printf("Enter recipient street: ");
@@ -42,7 +43,6 @@ void addMailInteractive(Post* post) {
 	scanf("%14s", mailId);
 	getchar();
 	printf("Enter creation time (dd:MM:yyyy hh:mm:ss): ");
-
 	if (fgets(creationTime, sizeof(creationTime), stdin) == NULL) {
 		fprintf(stderr, "Error reading creation time.\n");
 		exit(EXIT_FAILURE);
@@ -72,7 +72,6 @@ void deleteMailById(Post* post) {
 
 	if (index != -1) {
 		deleteMail(&post->mails[index]);
-
 		for (int i = index; i < post->mailCount - 1; i++) {
 			post->mails[i] = post->mails[i + 1];
 		}
@@ -117,7 +116,6 @@ void printDeliveredMails(Post* post) {
 
 void printExpiredMails(Post* post) {
 	time_t currentTime = time(NULL);
-	int diff = 180 * 60 * 60 * 24;
 	for (int i = 0; i < post->mailCount; i++) {
 		struct tm createTm = {0};
 		strptime(post->mails[i].creationTime.data, "%d:%m:%Y %H:%M:%S", &createTm);
@@ -129,9 +127,10 @@ void printExpiredMails(Post* post) {
 }
 
 int main() {
+	char* deliveryTime;
 	Address officeAddress = createAddress("City", "Street", 1, "Building", 1, "123456");
 	Post post = createPost(&officeAddress);
-
+	Mail* mail;
 	int choice;
 	while (1) {
 		printf(
@@ -156,8 +155,7 @@ int main() {
 				printExpiredMails(&post);
 				break;
 			case 6:
-				char* deliveryTime;
-				Mail* mail = searchMailById(&post);
+				mail = searchMailById(&post);
 				getchar();
 				printf("Enter creation time (dd:MM:yyyy hh:mm:ss): ");
 				fgets(deliveryTime, sizeof(deliveryTime), stdin);
