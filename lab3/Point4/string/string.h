@@ -2,7 +2,7 @@
 #define STRING_H
 
 typedef struct {
-	char* data;
+    char* data;
 	int length;
 } String;
 
