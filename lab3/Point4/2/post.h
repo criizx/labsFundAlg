@@ -4,7 +4,7 @@
 #include "data.h"
 
 typedef struct {
-	Address* currentOfficeAddress;
+    Address* currentOfficeAddress;
 	Mail* mails;
 	int mailCount;
 } Post;

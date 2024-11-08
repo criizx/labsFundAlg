@@ -9,17 +9,19 @@
 
 #define diff (180 * 24 * 60 * 60)
 
-void printMail(const Mail* mail) {
+void printMail(const Mail *mail) {
 	printf("Mail ID: %s\n", mail->mailId.data);
-	printf("Recipient: %s, %s, House: %u, Building: %s, Apartment: %u, Postal Code: %s\n", mail->recipient.city.data,
-	       mail->recipient.street.data, mail->recipient.houseNumber, mail->recipient.building.data,
-	       mail->recipient.apartmentNumber, mail->recipient.postalCode.data);
+	printf(
+	    "Recipient: %s, %s, House: %u, Building: %s, Apartment: %u, Postal "
+	    "Code: %s\n",
+	    mail->recipient.city.data, mail->recipient.street.data, mail->recipient.houseNumber,
+	    mail->recipient.building.data, mail->recipient.apartmentNumber, mail->recipient.postalCode.data);
 	printf("Weight: %.2f\n", mail->weight);
 	printf("Creation Time: %s\n", mail->creationTime.data);
 	printf("Delivery Time: %s\n", mail->deliveryTime.data);
 }
 
-void addMailInteractive(Post* post) {
+void addMailInteractive(Post *post) {
 	char *city, *street, *building, *postalCode;
 	unsigned int houseNumber, apartmentNumber;
 	float weight;
@@ -57,8 +59,8 @@ void addMailInteractive(Post* post) {
 	free(postalCode);
 }
 
-void deleteMailById(Post* post) {
-	char* mailId;
+void deleteMailById(Post *post) {
+	char *mailId;
 	printf("Enter mail ID to delete: ");
 	scanf("%ms", &mailId);
 
@@ -86,8 +88,8 @@ void deleteMailById(Post* post) {
 	free(mailId);
 }
 
-Mail* searchMailById(Post* post) {
-	char* mailId;
+Mail *searchMailById(Post *post) {
+	char *mailId;
 	printf("Enter mail ID to search: ");
 	scanf("%ms", &mailId);
 
@@ -100,7 +102,7 @@ Mail* searchMailById(Post* post) {
 	free(mailId);
 }
 
-void printDeliveredMails(Post* post) {
+void printDeliveredMails(Post *post) {
 	time_t currentTime = time(NULL);
 	for (int i = 0; i < post->mailCount; i++) {
 		struct tm deliveryTm = {0};
@@ -114,7 +116,7 @@ void printDeliveredMails(Post* post) {
 	}
 }
 
-void printExpiredMails(Post* post) {
+void printExpiredMails(Post *post) {
 	time_t currentTime = time(NULL);
 	for (int i = 0; i < post->mailCount; i++) {
 		struct tm createTm = {0};
@@ -127,14 +129,15 @@ void printExpiredMails(Post* post) {
 }
 
 int main() {
-	char* deliveryTime;
+	char *deliveryTime;
 	Address officeAddress = createAddress("City", "Street", 1, "Building", 1, "123456");
 	Post post = createPost(&officeAddress);
-	Mail* mail;
+	Mail *mail;
 	int choice;
 	while (1) {
 		printf(
-		    "1. Add Mail\n2. Delete Mail by ID\n3. Search Mail by ID\n4. Show Delivered Mails\n5. Show Expired "
+		    "1. Add Mail\n2. Delete Mail by ID\n3. Search Mail by ID\n4. Show "
+		    "Delivered Mails\n5. Show Expired "
 		    "Mails\n6. Add Delivery time\n0. Exit\nEnter choice: ");
 		scanf("%d", &choice);
 		switch (choice) {

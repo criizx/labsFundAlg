@@ -13,7 +13,7 @@ typedef struct {
 } Address;
 
 Address createAddress(const char* city, const char* street, unsigned int houseNumber, const char* building,
-                      unsigned int apartmentNumber, const char* postalCode);
+                unsigned int apartmentNumber, const char* postalCode);
 void deleteAddress(Address* address);
 
 typedef struct {
