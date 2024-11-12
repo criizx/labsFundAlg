@@ -25,8 +25,21 @@ double normP(Vector v, double p) {
 
 double normA(Vector v) {
 	double **A = (double **)malloc(v.dimension * sizeof(double *));
+	if (A == NULL) {
+		fprintf(stderr, "Error: Memory allocation for matrix A failed.\n");
+		return -1.0;
+	}
+
 	for (int i = 0; i < v.dimension; i++) {
 		A[i] = (double *)malloc(v.dimension * sizeof(double));
+		if (A[i] == NULL) {
+			fprintf(stderr, "Error: Memory allocation for matrix row %d failed.\n", i);
+			for (int j = 0; j < i; j++) {
+				free(A[j]);
+			}
+			free(A);
+			return -1.0;
+		}
 		for (int j = 0; j < v.dimension; j++) {
 			A[i][j] = (i == j) ? 1.0 : 0.0;
 		}

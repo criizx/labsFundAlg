@@ -1,0 +1,11 @@
+myvar=15;
+penis=12;
+denis=penis/10;
+penis=penis+10+10;
+bg=25;
+ccc=bg+11;
+print ccc;
+myvar=ccc + 10;
+bg=ccc*myvar;
+print;
+

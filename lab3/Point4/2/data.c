@@ -31,7 +31,7 @@ int validateMail(const Address *recipient, float weight, const char *mailId, con
 	if (!strptime(creationTime, timeFormat, &creationTm)) {
 		return -1;
 	}
-	if (deliveryTime == "") {
+	if (strcmp(deliveryTime, "")) {
 		if (!strptime(deliveryTime, timeFormat, &deliveryTm)) {
 			return -1;
 		}
