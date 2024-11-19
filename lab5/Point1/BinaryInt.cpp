@@ -71,7 +71,7 @@ std::ostream& operator<<(std::ostream& os, const BinaryInt& binInt) {
 }
 
 std::pair<BinaryInt, BinaryInt> BinaryInt::splitBits() const {
-	BinaryInt highBits(value & 0xFFFF0000);  // Старшие 16 бит
-	BinaryInt lowBits(value & 0x0000FFFF);   // Младшие 16 бит
+	BinaryInt highBits(value & 0xFFFF0000);
+	BinaryInt lowBits(value & 0x0000FFFF);
 	return std::make_pair(highBits, lowBits);
 }
